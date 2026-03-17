@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,7 +47,7 @@
       window.dispatchEvent(new Event('firebaseReady'));
       document.getElementById('firebase-status').textContent = '🟢 Online';
       document.getElementById('firebase-status').classList.add('online');
-    } catch(e) {
+    } catch (e) {
       console.warn('Firebase no conectado, usando localStorage:', e);
       window.firebaseReady = false;
       document.getElementById('firebase-status').textContent = '🔴 Offline';
@@ -54,6 +55,7 @@
     }
   </script>
 </head>
+
 <body>
 
   <div id="game-container">
@@ -62,6 +64,16 @@
       <h1>Cruce del Río</h1>
       <p class="subtitle">Lleva al zorro, la gallina y el maíz al otro lado sin que se coman entre sí</p>
     </header>
+
+    <aside id="rules">
+      <h3>Reglas</h3>
+      <ul>
+        <li>🦊 El zorro se come a la gallina si quedan solos.</li>
+        <li>🐔 La gallina se come el maíz si quedan solos.</li>
+        <li>🧑‍🌾 Solo puedes llevar un elemento por viaje.</li>
+        <li>🎯 Lleva a todos a la orilla de meta para ganar.</li>
+      </ul>
+    </aside>
 
     <div id="player-bar">
       <label for="player-name">Jugador:</label>
@@ -83,9 +95,12 @@
 
       <div id="river">
         <div id="river-waves">
-          <div class="wave-row"><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span></div>
-          <div class="wave-row offset"><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span></div>
-          <div class="wave-row"><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span></div>
+          <div class="wave-row"><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span
+              class="wave">~</span><span class="wave">~</span></div>
+          <div class="wave-row offset"><span class="wave">~</span><span class="wave">~</span><span
+              class="wave">~</span><span class="wave">~</span><span class="wave">~</span></div>
+          <div class="wave-row"><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span
+              class="wave">~</span><span class="wave">~</span></div>
         </div>
         <div id="boat-track">
           <div id="boat">
@@ -159,16 +174,9 @@
     <p id="leaderboard-empty">Sin registros aun. Gana una partida para aparecer aqui.</p>
   </section>
 
-  <aside id="rules">
-    <h3>Reglas</h3>
-    <ul>
-      <li>🦊 El zorro se come a la gallina si quedan solos.</li>
-      <li>🐔 La gallina se come el maíz si quedan solos.</li>
-      <li>🧑‍🌾 Solo puedes llevar un elemento por viaje.</li>
-      <li>🎯 Lleva a todos a la orilla de meta para ganar.</li>
-    </ul>
-  </aside>
+
 
   <script src="script.js"></script>
 </body>
+
 </html>
