@@ -1,8 +1,8 @@
 const ENTITIES = {
   farmer: { emoji: '🧑‍🌾', name: 'Granjero' },
-  fox:     { emoji: '🦊',    name: 'Zorro' },
-  chicken: { emoji: '🐔',    name: 'Gallina' },
-  corn:    { emoji: '🌽',    name: 'Maíz' }
+  fox: { emoji: '🦊', name: 'Zorro' },
+  chicken: { emoji: '🐔', name: 'Gallina' },
+  corn: { emoji: '🌽', name: 'Maíz' }
 };
 
 const STORAGE_KEY = 'rio-granjero-leaderboard';
@@ -41,7 +41,7 @@ async function addToHistory(name, movesCount, seconds) {
   if (window.firebase_addScore) {
     try {
       await window.firebase_addScore(entry);
-    } catch(e) {
+    } catch (e) {
       console.warn('Error guardando en Firebase, usando localStorage:', e);
       _addToLocalStorage(entry);
     }
@@ -173,6 +173,11 @@ function renderLeaderboard(firebaseEntries) {
   if (history.length === 0) {
     leaderboardTable.style.display = 'none';
     leaderboardEmpty.style.display = 'block';
+    if (!firebaseEntries && window.firebaseReady === undefined) {
+      leaderboardEmpty.textContent = 'Cargando ranking...';
+    } else {
+      leaderboardEmpty.textContent = 'Sin registros aun. Gana una partida para aparecer aqui.';
+    }
     return;
   }
 
@@ -222,8 +227,6 @@ function init() {
   timerEl.textContent = '00:00';
   startTime = null;
   render();
-  // Si no hay Firebase, mostrar localStorage
-  if (!window.firebaseReady) renderLeaderboard();
 }
 
 function render() {
