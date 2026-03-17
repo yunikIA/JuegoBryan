@@ -638,13 +638,13 @@
 
     // ── AUTENTICACIÓN ──────────────────────────────
     // 🔒 IMPORTANTE: Poné acá tu email de Google para que solo vos puedas entrar
-    const ADMIN_EMAIL = "bryanescobar00899@gmail.com";
+    const ADMIN_EMAILS = ["bryanescobar00899@gmail.com", "yunik.arg@gmail.com"];
 
     let allEntries = [];
     let unsubscribe = null;
 
     onAuthStateChanged(auth, (user) => {
-      if (user && user.email === ADMIN_EMAIL) {
+      if (user && ADMIN_EMAILS.includes(user.email)) {
         showPanel(user);
         loadData();
       } else if (user) {
