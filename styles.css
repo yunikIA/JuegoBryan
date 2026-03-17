@@ -290,6 +290,25 @@ header h1 {
 #restart-area {
   text-align: center;
   margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+
+#admin-link {
+  color: #555;
+  text-decoration: none;
+  font-size: 0.78rem;
+  border: 1px solid #333;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+#admin-link:hover {
+  color: #e2b714;
+  border-color: #e2b714;
 }
 
 #restart-btn {
@@ -414,6 +433,17 @@ header h1 {
 #player-name:focus {
   outline: none;
   border-color: #e2b714;
+}
+
+#firebase-status {
+  font-size: 0.75rem;
+  color: #888;
+  margin-left: 4px;
+  transition: color 0.3s;
+}
+
+#firebase-status.online {
+  color: #51cf66;
 }
 
 #timer {
