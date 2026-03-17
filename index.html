@@ -5,6 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cruce del Río - Zorro, Gallina y Maíz</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_cNH8xUPUCdcHyudhX3TCY7c87wPtOw0",
+      authDomain: "juego-bryan.firebaseapp.com",
+      projectId: "juego-bryan",
+      storageBucket: "juego-bryan.firebasestorage.app",
+      messagingSenderId: "750400781014",
+      appId: "1:750400781014:web:a575e608a60e1426f82777"
+    };
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // Exponer funciones al scope global para script.js
+      window.firebase_addScore = async (entry) => {
+        await addDoc(collection(db, "leaderboard"), entry);
+      };
+
+      window.firebase_onLeaderboard = (callback) => {
+        const q = query(collection(db, "leaderboard"), orderBy("moves", "asc"), orderBy("time", "asc"), limit(20));
+        return onSnapshot(q, (snapshot) => {
+          const entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          callback(entries);
+        });
+      };
+
+      window.firebase_clearLeaderboard = async () => {
+        const snap = await getDocs(collection(db, "leaderboard"));
+        const deletes = snap.docs.map(d => deleteDoc(d.ref));
+        await Promise.all(deletes);
+      };
+
+      window.firebaseReady = true;
+      window.dispatchEvent(new Event('firebaseReady'));
+      document.getElementById('firebase-status').textContent = '🟢 Online';
+      document.getElementById('firebase-status').classList.add('online');
+    } catch(e) {
+      console.warn('Firebase no conectado, usando localStorage:', e);
+      window.firebaseReady = false;
+      document.getElementById('firebase-status').textContent = '🔴 Offline';
+    }
+  </script>
 </head>
 <body>
 
@@ -18,6 +65,7 @@
     <div id="player-bar">
       <label for="player-name">Jugador:</label>
       <input type="text" id="player-name" placeholder="Tu nombre" maxlength="20">
+      <span id="firebase-status" title="Estado de conexión">⏳</span>
       <span id="timer">00:00</span>
     </div>
 

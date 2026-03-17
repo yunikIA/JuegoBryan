@@ -7,6 +7,73 @@ const ENTITIES = {
 
 const STORAGE_KEY = 'rio-granjero-leaderboard';
 
+let unsubscribeFirebase = null; // para limpiar el listener en tiempo real
+
+function getHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(history) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+}
+
+async function addToHistory(name, movesCount, seconds) {
+  const entry = {
+    name: name || 'Anonimo',
+    moves: movesCount,
+    time: seconds,
+    date: new Date().toLocaleDateString('es-ES'),
+    timestamp: Date.now()
+  };
+
+  // Esperar hasta 3s a que Firebase esté listo
+  if (!window.firebase_addScore) {
+    await new Promise(resolve => {
+      const timeout = setTimeout(resolve, 3000);
+      window.addEventListener('firebaseReady', () => { clearTimeout(timeout); resolve(); }, { once: true });
+    });
+  }
+
+  if (window.firebase_addScore) {
+    try {
+      await window.firebase_addScore(entry);
+    } catch(e) {
+      console.warn('Error guardando en Firebase, usando localStorage:', e);
+      _addToLocalStorage(entry);
+    }
+  } else {
+    _addToLocalStorage(entry);
+  }
+}
+
+function _addToLocalStorage(entry) {
+  const history = getHistory();
+  history.push(entry);
+  history.sort((a, b) => a.moves - b.moves || a.time - b.time);
+  if (history.length > 20) history.length = 20;
+  saveHistory(history);
+  renderLeaderboard();
+}
+
+function setupLeaderboardListener() {
+  const tryConnect = () => {
+    if (window.firebase_onLeaderboard) {
+      if (unsubscribeFirebase) unsubscribeFirebase();
+      unsubscribeFirebase = window.firebase_onLeaderboard((entries) => {
+        renderLeaderboard(entries);
+      });
+    } else {
+      // Firebase aún no cargó, esperar el evento
+      window.addEventListener('firebaseReady', tryConnect, { once: true });
+    }
+  };
+  tryConnect();
+}
+
 let state = {};
 let moves = 0;
 let animating = false;
@@ -123,8 +190,8 @@ function addToHistory(name, movesCount, seconds) {
   renderLeaderboard();
 }
 
-function renderLeaderboard() {
-  const history = getHistory();
+function renderLeaderboard(firebaseEntries) {
+  const history = firebaseEntries || getHistory();
   leaderboardBody.innerHTML = '';
 
   if (history.length === 0) {
@@ -174,7 +241,8 @@ function init() {
   timerEl.textContent = '00:00';
   startTime = null;
   render();
-  renderLeaderboard();
+  // Si no hay Firebase, mostrar localStorage
+  if (!window.firebaseReady) renderLeaderboard();
 }
 
 function render() {
@@ -320,11 +388,10 @@ buttons.forEach(btn => {
 document.getElementById('restart-btn').addEventListener('click', init);
 document.getElementById('overlay-restart').addEventListener('click', init);
 
+// Borrar historial solo disponible desde el panel admin
 document.getElementById('clear-history').addEventListener('click', () => {
-  if (confirm('¿Borrar todo el historial?')) {
-    localStorage.removeItem(STORAGE_KEY);
-    renderLeaderboard();
-  }
+  alert('Para borrar el historial usá el panel de administración en /admin.html');
 });
 
+setupLeaderboardListener();
 init();
