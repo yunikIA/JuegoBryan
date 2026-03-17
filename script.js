@@ -6,11 +6,15 @@ const ENTITIES = {
 };
 
 const STORAGE_KEY = 'rio-granjero-leaderboard';
-let unsubscribeFirebase = null;
+
+let unsubscribeFirebase = null; // para limpiar el listener en tiempo real
 
 function getHistory() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
 }
 
 function saveHistory(history) {
@@ -26,27 +30,27 @@ async function addToHistory(name, movesCount, seconds) {
     timestamp: Date.now()
   };
 
+  // Esperar hasta 3s a que Firebase esté listo
   if (!window.firebase_addScore) {
     await new Promise(resolve => {
-      const t = setTimeout(resolve, 4000);
-      window.addEventListener('firebaseReady', () => { clearTimeout(t); resolve(); }, { once: true });
+      const timeout = setTimeout(resolve, 3000);
+      window.addEventListener('firebaseReady', () => { clearTimeout(timeout); resolve(); }, { once: true });
     });
   }
 
   if (window.firebase_addScore) {
     try {
       await window.firebase_addScore(entry);
-      console.log('Score guardado en Firebase');
     } catch(e) {
-      console.warn('Error Firebase, usando localStorage:', e);
-      _saveToLocalStorage(entry);
+      console.warn('Error guardando en Firebase, usando localStorage:', e);
+      _addToLocalStorage(entry);
     }
   } else {
-    _saveToLocalStorage(entry);
+    _addToLocalStorage(entry);
   }
 }
 
-function _saveToLocalStorage(entry) {
+function _addToLocalStorage(entry) {
   const history = getHistory();
   history.push(entry);
   history.sort((a, b) => a.moves - b.moves || a.time - b.time);
@@ -56,21 +60,18 @@ function _saveToLocalStorage(entry) {
 }
 
 function setupLeaderboardListener() {
-  const connect = () => {
-    if (unsubscribeFirebase) unsubscribeFirebase();
-    unsubscribeFirebase = window.firebase_onLeaderboard((entries) => {
-      renderLeaderboard(entries);
-    });
+  const tryConnect = () => {
+    if (window.firebase_onLeaderboard) {
+      if (unsubscribeFirebase) unsubscribeFirebase();
+      unsubscribeFirebase = window.firebase_onLeaderboard((entries) => {
+        renderLeaderboard(entries);
+      });
+    } else {
+      // Firebase aún no cargó, esperar el evento
+      window.addEventListener('firebaseReady', tryConnect, { once: true });
+    }
   };
-
-  if (window.firebase_onLeaderboard) {
-    connect();
-  } else {
-    leaderboardEmpty.textContent = 'Conectando...';
-    leaderboardEmpty.style.display = 'block';
-    leaderboardTable.style.display = 'none';
-    window.addEventListener('firebaseReady', connect, { once: true });
-  }
+  tryConnect();
 }
 
 let state = {};
@@ -81,21 +82,21 @@ let timerInterval = null;
 let startTime = null;
 let elapsedSeconds = 0;
 
-const leftChars      = document.getElementById('left-characters');
-const rightChars     = document.getElementById('right-characters');
-const boat           = document.getElementById('boat');
+const leftChars = document.getElementById('left-characters');
+const rightChars = document.getElementById('right-characters');
+const boat = document.getElementById('boat');
 const boatPassengers = document.getElementById('boat-passengers');
-const movesEl        = document.getElementById('moves');
-const statusMsg      = document.getElementById('status-message');
-const overlay        = document.getElementById('overlay');
-const overlayBox     = document.getElementById('overlay-box');
-const overlayIcon    = document.getElementById('overlay-icon');
-const overlayTitle   = document.getElementById('overlay-title');
+const movesEl = document.getElementById('moves');
+const statusMsg = document.getElementById('status-message');
+const overlay = document.getElementById('overlay');
+const overlayBox = document.getElementById('overlay-box');
+const overlayIcon = document.getElementById('overlay-icon');
+const overlayTitle = document.getElementById('overlay-title');
 const overlayMessage = document.getElementById('overlay-message');
-const buttons        = document.querySelectorAll('.move-btn');
-const timerEl        = document.getElementById('timer');
-const playerNameInput  = document.getElementById('player-name');
-const leaderboardBody  = document.getElementById('leaderboard-body');
+const buttons = document.querySelectorAll('.move-btn');
+const timerEl = document.getElementById('timer');
+const playerNameInput = document.getElementById('player-name');
+const leaderboardBody = document.getElementById('leaderboard-body');
 const leaderboardEmpty = document.getElementById('leaderboard-empty');
 const leaderboardTable = document.getElementById('leaderboard-table');
 
@@ -107,25 +108,35 @@ function playSound(type) {
   osc.connect(gain);
   gain.connect(audioCtx.destination);
   gain.gain.value = 0.15;
+
   if (type === 'move') {
-    osc.type = 'sine'; osc.frequency.value = 440;
+    osc.type = 'sine';
+    osc.frequency.value = 440;
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
   } else if (type === 'win') {
-    osc.type = 'square'; osc.frequency.value = 523;
+    osc.type = 'square';
+    osc.frequency.value = 523;
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.6);
     setTimeout(() => {
-      const o2 = audioCtx.createOscillator(); const g2 = audioCtx.createGain();
+      const o2 = audioCtx.createOscillator();
+      const g2 = audioCtx.createGain();
       o2.connect(g2); g2.connect(audioCtx.destination);
-      g2.gain.value = 0.15; o2.type = 'square'; o2.frequency.value = 659;
+      g2.gain.value = 0.15;
+      o2.type = 'square';
+      o2.frequency.value = 659;
       g2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
       o2.start(); o2.stop(audioCtx.currentTime + 0.5);
     }, 200);
   } else if (type === 'lose') {
-    osc.type = 'sawtooth'; osc.frequency.value = 200;
+    osc.type = 'sawtooth';
+    osc.frequency.value = 200;
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
   }
 }
 
@@ -137,7 +148,8 @@ function formatTime(totalSeconds) {
 
 function startTimer() {
   stopTimer();
-  startTime = Date.now(); elapsedSeconds = 0;
+  startTime = Date.now();
+  elapsedSeconds = 0;
   timerEl.textContent = '00:00';
   timerInterval = setInterval(() => {
     elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
@@ -146,29 +158,36 @@ function startTimer() {
 }
 
 function stopTimer() {
-  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
 }
 
+
+
 function renderLeaderboard(firebaseEntries) {
-  const history = firebaseEntries !== undefined ? firebaseEntries : getHistory();
+  const history = firebaseEntries || getHistory();
   leaderboardBody.innerHTML = '';
+
   if (history.length === 0) {
     leaderboardTable.style.display = 'none';
     leaderboardEmpty.style.display = 'block';
-    leaderboardEmpty.textContent = 'Sin registros aun. Gana una partida para aparecer aqui.';
     return;
   }
+
   leaderboardTable.style.display = 'table';
   leaderboardEmpty.style.display = 'none';
+
   history.forEach((entry, i) => {
     const tr = document.createElement('tr');
     const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
     tr.innerHTML =
       '<td>' + (medal || (i + 1)) + '</td>' +
-      '<td>' + escapeHtml(entry.name || 'Anonimo') + '</td>' +
+      '<td>' + escapeHtml(entry.name) + '</td>' +
       '<td>' + entry.moves + '</td>' +
-      '<td>' + formatTime(entry.time || 0) + '</td>' +
-      '<td>' + (entry.date || '') + '</td>';
+      '<td>' + formatTime(entry.time) + '</td>' +
+      '<td>' + entry.date + '</td>';
     leaderboardBody.appendChild(tr);
   });
 }
@@ -180,14 +199,21 @@ function escapeHtml(str) {
 }
 
 function init() {
-  state = { farmer: 'left', fox: 'left', chicken: 'left', corn: 'left' };
-  moves = 0; animating = false; gameOver = false;
+  state = {
+    farmer: 'left',
+    fox: 'left',
+    chicken: 'left',
+    corn: 'left'
+  };
+  moves = 0;
+  animating = false;
+  gameOver = false;
   movesEl.textContent = '0';
   if (!playerNameInput.value.trim()) {
-    statusMsg.textContent = 'Ingresa tu nombre para jugar';
+    statusMsg.textContent = '✏️ Ingresá tu nombre para jugar';
     statusMsg.className = 'error';
   } else {
-    statusMsg.textContent = 'Elige que llevar en el bote';
+    statusMsg.textContent = 'Elige qué llevar en el bote';
     statusMsg.className = '';
   }
   overlay.classList.add('hidden');
@@ -196,33 +222,46 @@ function init() {
   timerEl.textContent = '00:00';
   startTime = null;
   render();
+  // Si no hay Firebase, mostrar localStorage
+  if (!window.firebaseReady) renderLeaderboard();
 }
 
 function render() {
-  leftChars.innerHTML = ''; rightChars.innerHTML = '';
+  leftChars.innerHTML = '';
+  rightChars.innerHTML = '';
+
   for (const [key, info] of Object.entries(ENTITIES)) {
     const el = document.createElement('div');
     el.className = 'character';
     el.innerHTML = '<span>' + info.emoji + '</span><span class="label">' + info.name + '</span>';
-    if (state[key] === 'left') leftChars.appendChild(el);
-    else if (state[key] === 'right') rightChars.appendChild(el);
+
+    if (state[key] === 'left') {
+      leftChars.appendChild(el);
+    } else {
+      rightChars.appendChild(el);
+    }
   }
+
   boat.className = state.farmer === 'left' ? 'at-left' : 'at-right';
+
   buttons.forEach(btn => {
-    const p = btn.dataset.passenger;
-    btn.disabled = p === 'none'
-      ? animating || gameOver
-      : animating || gameOver || state[p] !== state.farmer;
+    const passenger = btn.dataset.passenger;
+    if (passenger === 'none') {
+      btn.disabled = animating || gameOver;
+    } else {
+      btn.disabled = animating || gameOver || state[passenger] !== state.farmer;
+    }
   });
 }
 
 function move(passenger) {
   if (animating || gameOver) return;
 
+  // Validar nombre antes del primer movimiento
   if (!startTime && !playerNameInput.value.trim()) {
     playerNameInput.focus();
     playerNameInput.style.borderColor = '#ff6b6b';
-    statusMsg.textContent = 'Ingresa tu nombre para jugar!';
+    statusMsg.textContent = '¡Ingresá tu nombre para jugar!';
     statusMsg.className = 'error';
     document.getElementById('scene').classList.add('shake');
     setTimeout(() => document.getElementById('scene').classList.remove('shake'), 500);
@@ -231,7 +270,7 @@ function move(passenger) {
   }
 
   if (passenger !== 'none' && state[passenger] !== state.farmer) {
-    statusMsg.textContent = 'El ' + ENTITIES[passenger].name + ' no esta en tu orilla';
+    statusMsg.textContent = 'El ' + ENTITIES[passenger].name + ' no está en tu orilla';
     statusMsg.className = 'error';
     document.getElementById('scene').classList.add('shake');
     setTimeout(() => document.getElementById('scene').classList.remove('shake'), 500);
@@ -239,17 +278,23 @@ function move(passenger) {
   }
 
   if (!startTime) startTimer();
+
   animating = true;
   buttons.forEach(b => b.disabled = true);
 
-  const to = state.farmer === 'left' ? 'right' : 'left';
+  const from = state.farmer;
+  const to = from === 'left' ? 'right' : 'left';
+
   let boatContent = ENTITIES.farmer.emoji;
-  if (passenger !== 'none') boatContent += ' ' + ENTITIES[passenger].emoji;
+  if (passenger !== 'none') {
+    boatContent += ' ' + ENTITIES[passenger].emoji;
+  }
   boatPassengers.textContent = boatContent;
 
   state.farmer = 'crossing';
   if (passenger !== 'none') state[passenger] = 'crossing';
   render();
+
   boat.className = to === 'left' ? 'at-left' : 'at-right';
   playSound('move');
 
@@ -260,6 +305,7 @@ function move(passenger) {
     movesEl.textContent = moves;
     boatPassengers.textContent = '';
     animating = false;
+
     checkState();
     render();
   }, 1000);
@@ -267,33 +313,39 @@ function move(passenger) {
 
 function checkState() {
   if (state.fox === 'right' && state.chicken === 'right' && state.corn === 'right') {
-    gameOver = true; stopTimer();
-    statusMsg.textContent = 'Victoria! Todos cruzaron a salvo';
+    gameOver = true;
+    stopTimer();
+    statusMsg.textContent = '¡Victoria! Todos cruzaron a salvo';
     statusMsg.className = 'success';
     playSound('win');
     addToHistory(playerNameInput.value.trim(), moves, elapsedSeconds);
     showOverlay('win');
     return;
   }
+
   if (state.fox === state.chicken && state.farmer !== state.fox) {
-    gameOver = true; stopTimer();
-    statusMsg.textContent = 'El zorro se comio a la gallina';
+    gameOver = true;
+    stopTimer();
+    statusMsg.textContent = 'El zorro se comió a la gallina';
     statusMsg.className = 'error';
     playSound('lose');
     highlightDanger(state.fox);
-    setTimeout(() => showOverlay('lose', 'El zorro se comio a la gallina'), 800);
+    setTimeout(() => showOverlay('lose', 'El zorro se comió a la gallina 🦊🐔'), 800);
     return;
   }
+
   if (state.chicken === state.corn && state.farmer !== state.chicken) {
-    gameOver = true; stopTimer();
-    statusMsg.textContent = 'La gallina se comio el maiz';
+    gameOver = true;
+    stopTimer();
+    statusMsg.textContent = 'La gallina se comió el maíz';
     statusMsg.className = 'error';
     playSound('lose');
     highlightDanger(state.chicken);
-    setTimeout(() => showOverlay('lose', 'La gallina se comio el maiz'), 800);
+    setTimeout(() => showOverlay('lose', 'La gallina se comió el maíz 🐔🌽'), 800);
     return;
   }
-  statusMsg.textContent = 'Turno ' + (moves + 1) + ' — Elige que llevar';
+
+  statusMsg.textContent = 'Turno ' + (moves + 1) + ' — Elige qué llevar';
   statusMsg.className = '';
 }
 
@@ -308,34 +360,46 @@ function highlightDanger(side) {
 function showOverlay(type, msg) {
   overlay.classList.remove('hidden');
   overlayBox.className = type;
+
   if (type === 'win') {
     overlayIcon.textContent = '🎉';
-    overlayTitle.textContent = 'Ganaste!';
+    overlayTitle.textContent = '¡Ganaste!';
     overlayMessage.textContent = moves + ' movimientos en ' + formatTime(elapsedSeconds);
   } else {
     overlayIcon.textContent = '💀';
-    overlayTitle.textContent = 'Perdiste!';
-    overlayMessage.textContent = msg || 'Algo salio mal...';
+    overlayTitle.textContent = '¡Perdiste!';
+    overlayMessage.textContent = msg || 'Algo salió mal...';
   }
 }
 
+// Feedback visual en tiempo real del nombre
 playerNameInput.addEventListener('input', () => {
   if (playerNameInput.value.trim()) {
     playerNameInput.classList.add('filled');
     playerNameInput.style.borderColor = '';
-    if (!gameOver && !startTime) { statusMsg.textContent = 'Elige que llevar en el bote'; statusMsg.className = ''; }
+    if (!gameOver && !startTime) {
+      statusMsg.textContent = 'Elige qué llevar en el bote';
+      statusMsg.className = '';
+    }
   } else {
     playerNameInput.classList.remove('filled');
-    statusMsg.textContent = 'Ingresa tu nombre para jugar';
+    statusMsg.textContent = '✏️ Ingresá tu nombre para jugar';
     statusMsg.className = 'error';
   }
 });
 
-buttons.forEach(btn => btn.addEventListener('click', () => move(btn.dataset.passenger)));
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    move(btn.dataset.passenger);
+  });
+});
+
 document.getElementById('restart-btn').addEventListener('click', init);
 document.getElementById('overlay-restart').addEventListener('click', init);
+
+// Borrar historial solo disponible desde el panel admin
 document.getElementById('clear-history').addEventListener('click', () => {
-  alert('Para borrar el historial usa el panel de administracion en /admin.html');
+  alert('Para borrar el historial usá el panel de administración en /admin.html');
 });
 
 setupLeaderboardListener();
