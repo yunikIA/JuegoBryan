@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,11 +20,7 @@
       --muted: #6b6b8a;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Space Grotesk', sans-serif;
@@ -51,7 +46,7 @@
       text-align: center;
       max-width: 420px;
       width: 90%;
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
     }
 
     .login-icon {
@@ -94,7 +89,7 @@
 
     #google-login-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 24px rgba(255,255,255,0.15);
     }
 
     #google-login-btn svg {
@@ -287,9 +282,7 @@
       border-color: var(--gold);
     }
 
-    .search-input::placeholder {
-      color: var(--muted);
-    }
+    .search-input::placeholder { color: var(--muted); }
 
     .btn-danger-outline {
       background: none;
@@ -345,7 +338,7 @@
     }
 
     tbody tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(255,255,255,0.02);
     }
 
     .rank-cell {
@@ -355,27 +348,15 @@
       width: 50px;
     }
 
-    .rank-1 {
-      color: #e2b714;
-      font-weight: 700;
-    }
-
-    .rank-2 {
-      color: #c0c0c0;
-      font-weight: 700;
-    }
-
-    .rank-3 {
-      color: #cd7f32;
-      font-weight: 700;
-    }
+    .rank-1 { color: #e2b714; font-weight: 700; }
+    .rank-2 { color: #c0c0c0; font-weight: 700; }
+    .rank-3 { color: #cd7f32; font-weight: 700; }
 
     .name-cell {
       font-weight: 600;
     }
 
-    .moves-cell,
-    .time-cell {
+    .moves-cell, .time-cell {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.85rem;
     }
@@ -404,7 +385,7 @@
     .delete-row-btn:hover {
       color: var(--red);
       border-color: var(--red);
-      background: rgba(255, 71, 87, 0.08);
+      background: rgba(255,71,87,0.08);
     }
 
     /* Empty state */
@@ -452,15 +433,8 @@
       opacity: 1;
     }
 
-    #toast.success {
-      border-color: var(--green);
-      color: var(--green);
-    }
-
-    #toast.error {
-      border-color: var(--red);
-      color: var(--red);
-    }
+    #toast.success { border-color: var(--green); color: var(--green); }
+    #toast.error { border-color: var(--red); color: var(--red); }
 
     /* Back link */
     .back-link {
@@ -473,274 +447,253 @@
       transition: color 0.2s;
     }
 
-    .back-link:hover {
-      color: var(--gold);
-    }
+    .back-link:hover { color: var(--gold); }
 
     @media (max-width: 600px) {
-      .topbar {
-        padding: 12px 16px;
-      }
-
-      .content {
-        padding: 20px 14px;
-      }
-
-      .stats-row {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .search-input {
-        width: 150px;
-      }
-
-      #user-name {
-        display: none;
-      }
+      .topbar { padding: 12px 16px; }
+      .content { padding: 20px 14px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .search-input { width: 150px; }
+      #user-name { display: none; }
     }
   </style>
 </head>
-
 <body>
 
-  <!-- LOGIN -->
-  <div id="login-screen">
-    <div class="login-card">
-      <span class="login-icon">🔐</span>
-      <h1>Panel Admin</h1>
-      <p>Acceso restringido al administrador del juego.<br>Iniciá sesión con tu cuenta de Google.</p>
-      <button id="google-login-btn">
-        <!-- Google icon -->
-        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#EA4335"
-            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-          <path fill="#4285F4"
-            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
-          <path fill="#FBBC05"
-            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
-          <path fill="#34A853"
-            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
-        </svg>
-        Continuar con Google
-      </button>
-      <div id="login-error"></div>
-    </div>
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <span class="login-icon">🔐</span>
+    <h1>Panel Admin</h1>
+    <p>Acceso restringido al administrador del juego.<br>Iniciá sesión con tu cuenta de Google.</p>
+    <button id="google-login-btn">
+      <!-- Google icon -->
+      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Continuar con Google
+    </button>
+    <div id="login-error"></div>
   </div>
+</div>
 
-  <!-- ADMIN PANEL -->
-  <div id="admin-panel">
-    <nav class="topbar">
-      <div class="topbar-left">
-        <span class="topbar-logo">⛵</span>
-        <div>
-          <div class="topbar-sub">Panel de administración</div>
-          <h2>Cruce del Río</h2>
-        </div>
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <nav class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">⛵</span>
+      <div>
+        <div class="topbar-sub">Panel de administración</div>
+        <h2>Cruce del Río</h2>
       </div>
-      <div class="topbar-right">
-        <a href="index.html" class="back-link">← Volver al juego</a>
-        <div id="user-info">
-          <img id="user-avatar" src="" alt="avatar">
-          <span id="user-name"></span>
-        </div>
-        <button id="logout-btn">Salir</button>
-      </div>
-    </nav>
-
-    <div class="content">
-
-      <!-- Stats -->
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-label">Total partidas</div>
-          <div class="stat-value" id="stat-total">—</div>
-          <div class="stat-sub">registradas en Firestore</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Mejor score</div>
-          <div class="stat-value" id="stat-best">—</div>
-          <div class="stat-sub" id="stat-best-name">movimientos</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Promedio movs.</div>
-          <div class="stat-value" id="stat-avg">—</div>
-          <div class="stat-sub">por partida</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Jugadores únicos</div>
-          <div class="stat-value" id="stat-players">—</div>
-          <div class="stat-sub">distintos nombres</div>
-        </div>
-      </div>
-
-      <!-- Table -->
-      <div class="section-header">
-        <div class="section-title">
-          Todas las partidas
-          <span class="badge-count" id="count-badge">0</span>
-        </div>
-        <div class="header-actions">
-          <input type="text" class="search-input" id="search-input" placeholder="🔍 Buscar jugador...">
-          <button class="btn-danger-outline" id="delete-all-btn">🗑 Borrar todo</button>
-        </div>
-      </div>
-
-      <div class="table-wrapper">
-        <div class="loading" id="table-loading">Cargando datos...</div>
-        <table id="admin-table" style="display:none">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Jugador</th>
-              <th>Movimientos</th>
-              <th>Tiempo</th>
-              <th>Fecha</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="admin-tbody"></tbody>
-        </table>
-        <div class="empty-state" id="empty-state" style="display:none">
-          <span>📭</span>
-          Sin registros todavía.
-        </div>
-      </div>
-
     </div>
+    <div class="topbar-right">
+      <a href="index.html" class="back-link">← Volver al juego</a>
+      <div id="user-info">
+        <img id="user-avatar" src="" alt="avatar">
+        <span id="user-name"></span>
+      </div>
+      <button id="logout-btn">Salir</button>
+    </div>
+  </nav>
+
+  <div class="content">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total partidas</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-sub">registradas en Firestore</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Mejor score</div>
+        <div class="stat-value" id="stat-best">—</div>
+        <div class="stat-sub" id="stat-best-name">movimientos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Promedio movs.</div>
+        <div class="stat-value" id="stat-avg">—</div>
+        <div class="stat-sub">por partida</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Jugadores únicos</div>
+        <div class="stat-value" id="stat-players">—</div>
+        <div class="stat-sub">distintos nombres</div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="section-header">
+      <div class="section-title">
+        Todas las partidas
+        <span class="badge-count" id="count-badge">0</span>
+      </div>
+      <div class="header-actions">
+        <input type="text" class="search-input" id="search-input" placeholder="🔍 Buscar jugador...">
+        <button class="btn-danger-outline" id="delete-all-btn">🗑 Borrar todo</button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="loading" id="table-loading">Cargando datos...</div>
+      <table id="admin-table" style="display:none">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Jugador</th>
+            <th>Movimientos</th>
+            <th>Tiempo</th>
+            <th>Fecha</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="admin-tbody"></tbody>
+      </table>
+      <div class="empty-state" id="empty-state" style="display:none">
+        <span>📭</span>
+        Sin registros todavía.
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <div id="toast"></div>
+<div id="toast"></div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore, collection, query, orderBy,
-      onSnapshot, deleteDoc, doc, getDocs
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import {
-      getAuth, signInWithPopup, GoogleAuthProvider,
-      onAuthStateChanged, signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, query, orderBy,
+    onSnapshot, deleteDoc, doc, getDocs
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import {
+    getAuth, signInWithPopup, GoogleAuthProvider,
+    onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB_cNH8xUPUCdcHyudhX3TCY7c87wPtOw0",
-      authDomain: "juego-bryan.firebaseapp.com",
-      projectId: "juego-bryan",
-      storageBucket: "juego-bryan.firebasestorage.app",
-      messagingSenderId: "750400781014",
-      appId: "1:750400781014:web:a575e608a60e1426f82777"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_cNH8xUPUCdcHyudhX3TCY7c87wPtOw0",
+    authDomain: "juego-bryan.firebaseapp.com",
+    projectId: "juego-bryan",
+    storageBucket: "juego-bryan.firebasestorage.app",
+    messagingSenderId: "750400781014",
+    appId: "1:750400781014:web:a575e608a60e1426f82777"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
-    // ── AUTENTICACIÓN ──────────────────────────────
-    // 🔒 IMPORTANTE: Poné acá tu email de Google para que solo vos puedas entrar
-    const ADMIN_EMAIL = "bryanescobar00899@gmail.com";
+  // ── AUTENTICACIÓN ──────────────────────────────
+  // 🔒 IMPORTANTE: Poné acá tu email de Google para que solo vos puedas entrar
+  const ADMIN_EMAIL = "bryanescobar00899@gmail.com";
 
-    let allEntries = [];
-    let unsubscribe = null;
+  let allEntries = [];
+  let unsubscribe = null;
 
-    onAuthStateChanged(auth, (user) => {
-      if (user && user.email === ADMIN_EMAIL) {
-        showPanel(user);
-        loadData();
-      } else if (user) {
-        // Logueado pero no es admin
-        signOut(auth);
-        showLoginError('Esta cuenta no tiene acceso de administrador.');
-      } else {
-        showLogin();
-      }
+  onAuthStateChanged(auth, (user) => {
+    if (user && user.email === ADMIN_EMAIL) {
+      showPanel(user);
+      loadData();
+    } else if (user) {
+      // Logueado pero no es admin
+      signOut(auth);
+      showLoginError('Esta cuenta no tiene acceso de administrador.');
+    } else {
+      showLogin();
+    }
+  });
+
+  document.getElementById('google-login-btn').addEventListener('click', async () => {
+    try {
+      document.getElementById('login-error').textContent = '';
+      await signInWithPopup(auth, provider);
+    } catch(e) {
+      showLoginError('Error al iniciar sesión. Intentá de nuevo.');
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+  function showLogin() {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('admin-panel').style.display  = 'none';
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  }
+
+  function showPanel(user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-panel').style.display  = 'block';
+    document.getElementById('user-name').textContent = user.displayName || user.email;
+    document.getElementById('user-avatar').src = user.photoURL || '';
+  }
+
+  function showLoginError(msg) {
+    document.getElementById('login-error').textContent = msg;
+  }
+
+  // ── DATOS ──────────────────────────────────────
+  function loadData() {
+    const q = query(collection(db, "leaderboard"), orderBy("moves", "asc"), orderBy("time", "asc"));
+    unsubscribe = onSnapshot(q, (snapshot) => {
+      allEntries = snapshot.docs.map(d => ({ _id: d.id, ...d.data() }));
+      updateStats(allEntries);
+      renderTable(allEntries);
     });
+  }
 
-    document.getElementById('google-login-btn').addEventListener('click', async () => {
-      try {
-        document.getElementById('login-error').textContent = '';
-        await signInWithPopup(auth, provider);
-      } catch (e) {
-        showLoginError('Error al iniciar sesión. Intentá de nuevo.');
-      }
-    });
+  function updateStats(entries) {
+    const total = entries.length;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('count-badge').textContent = total;
 
-    document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
-
-    function showLogin() {
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('admin-panel').style.display = 'none';
-      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    if (total === 0) {
+      document.getElementById('stat-best').textContent = '—';
+      document.getElementById('stat-avg').textContent  = '—';
+      document.getElementById('stat-players').textContent = '—';
+      return;
     }
 
-    function showPanel(user) {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('admin-panel').style.display = 'block';
-      document.getElementById('user-name').textContent = user.displayName || user.email;
-      document.getElementById('user-avatar').src = user.photoURL || '';
+    const best = entries[0];
+    document.getElementById('stat-best').textContent = best.moves;
+    document.getElementById('stat-best-name').textContent = 'por ' + (best.name || 'Anónimo');
+
+    const avg = Math.round(entries.reduce((s, e) => s + (e.moves || 0), 0) / total);
+    document.getElementById('stat-avg').textContent = avg;
+
+    const unique = new Set(entries.map(e => (e.name || '').toLowerCase())).size;
+    document.getElementById('stat-players').textContent = unique;
+  }
+
+  function renderTable(entries) {
+    const loading    = document.getElementById('table-loading');
+    const table      = document.getElementById('admin-table');
+    const emptyState = document.getElementById('empty-state');
+    const tbody      = document.getElementById('admin-tbody');
+
+    loading.style.display = 'none';
+
+    if (entries.length === 0) {
+      table.style.display = 'none';
+      emptyState.style.display = 'block';
+      return;
     }
 
-    function showLoginError(msg) {
-      document.getElementById('login-error').textContent = msg;
-    }
+    table.style.display = 'table';
+    emptyState.style.display = 'none';
+    tbody.innerHTML = '';
 
-    // ── DATOS ──────────────────────────────────────
-    function loadData() {
-      const q = query(collection(db, "leaderboard"), orderBy("moves", "asc"), orderBy("time", "asc"));
-      unsubscribe = onSnapshot(q, (snapshot) => {
-        allEntries = snapshot.docs.map(d => ({ _id: d.id, ...d.data() }));
-        updateStats(allEntries);
-        renderTable(allEntries);
-      });
-    }
+    entries.forEach((entry, i) => {
+      const tr = document.createElement('tr');
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+      const rankClass = i < 3 ? 'rank-' + (i+1) : '';
 
-    function updateStats(entries) {
-      const total = entries.length;
-      document.getElementById('stat-total').textContent = total;
-      document.getElementById('count-badge').textContent = total;
-
-      if (total === 0) {
-        document.getElementById('stat-best').textContent = '—';
-        document.getElementById('stat-avg').textContent = '—';
-        document.getElementById('stat-players').textContent = '—';
-        return;
-      }
-
-      const best = entries[0];
-      document.getElementById('stat-best').textContent = best.moves;
-      document.getElementById('stat-best-name').textContent = 'por ' + (best.name || 'Anónimo');
-
-      const avg = Math.round(entries.reduce((s, e) => s + (e.moves || 0), 0) / total);
-      document.getElementById('stat-avg').textContent = avg;
-
-      const unique = new Set(entries.map(e => (e.name || '').toLowerCase())).size;
-      document.getElementById('stat-players').textContent = unique;
-    }
-
-    function renderTable(entries) {
-      const loading = document.getElementById('table-loading');
-      const table = document.getElementById('admin-table');
-      const emptyState = document.getElementById('empty-state');
-      const tbody = document.getElementById('admin-tbody');
-
-      loading.style.display = 'none';
-
-      if (entries.length === 0) {
-        table.style.display = 'none';
-        emptyState.style.display = 'block';
-        return;
-      }
-
-      table.style.display = 'table';
-      emptyState.style.display = 'none';
-      tbody.innerHTML = '';
-
-      entries.forEach((entry, i) => {
-        const tr = document.createElement('tr');
-        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
-        const rankClass = i < 3 ? 'rank-' + (i + 1) : '';
-
-        tr.innerHTML = `
+      tr.innerHTML = `
         <td class="rank-cell ${rankClass}">${medal}</td>
         <td class="name-cell">${escHtml(entry.name || 'Anónimo')}</td>
         <td class="moves-cell">${entry.moves}</td>
@@ -750,67 +703,66 @@
           <button class="delete-row-btn" data-id="${entry._id}" title="Eliminar">🗑</button>
         </td>
       `;
-        tbody.appendChild(tr);
-      });
-
-      // Eventos de borrado individual
-      tbody.querySelectorAll('.delete-row-btn').forEach(btn => {
-        btn.addEventListener('click', () => deleteEntry(btn.dataset.id));
-      });
-    }
-
-    async function deleteEntry(id) {
-      if (!confirm('¿Eliminar este registro?')) return;
-      try {
-        await deleteDoc(doc(db, "leaderboard", id));
-        showToast('Registro eliminado', 'success');
-      } catch (e) {
-        showToast('Error al eliminar', 'error');
-      }
-    }
-
-    document.getElementById('delete-all-btn').addEventListener('click', async () => {
-      if (!confirm('⚠️ ¿Borrar TODOS los registros? Esta acción no se puede deshacer.')) return;
-      try {
-        const snap = await getDocs(collection(db, "leaderboard"));
-        await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
-        showToast('Historial borrado', 'success');
-      } catch (e) {
-        showToast('Error al borrar', 'error');
-      }
+      tbody.appendChild(tr);
     });
 
-    // ── BÚSQUEDA ───────────────────────────────────
-    document.getElementById('search-input').addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase().trim();
-      const filtered = q
-        ? allEntries.filter(en => (en.name || '').toLowerCase().includes(q))
-        : allEntries;
-      renderTable(filtered);
-      document.getElementById('count-badge').textContent = filtered.length;
+    // Eventos de borrado individual
+    tbody.querySelectorAll('.delete-row-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteEntry(btn.dataset.id));
     });
+  }
 
-    // ── UTILS ──────────────────────────────────────
-    function formatTime(s) {
-      const m = Math.floor(s / 60);
-      return String(m).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  async function deleteEntry(id) {
+    if (!confirm('¿Eliminar este registro?')) return;
+    try {
+      await deleteDoc(doc(db, "leaderboard", id));
+      showToast('Registro eliminado', 'success');
+    } catch(e) {
+      showToast('Error al eliminar', 'error');
     }
+  }
 
-    function escHtml(str) {
-      const d = document.createElement('div');
-      d.textContent = str;
-      return d.innerHTML;
+  document.getElementById('delete-all-btn').addEventListener('click', async () => {
+    if (!confirm('⚠️ ¿Borrar TODOS los registros? Esta acción no se puede deshacer.')) return;
+    try {
+      const snap = await getDocs(collection(db, "leaderboard"));
+      await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+      showToast('Historial borrado', 'success');
+    } catch(e) {
+      showToast('Error al borrar', 'error');
     }
+  });
 
-    let toastTimer;
-    function showToast(msg, type = 'success') {
-      const t = document.getElementById('toast');
-      t.textContent = (type === 'success' ? '✓ ' : '✗ ') + msg;
-      t.className = 'show ' + type;
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => { t.className = ''; }, 3000);
-    }
-  </script>
+  // ── BÚSQUEDA ───────────────────────────────────
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    const filtered = q
+      ? allEntries.filter(en => (en.name || '').toLowerCase().includes(q))
+      : allEntries;
+    renderTable(filtered);
+    document.getElementById('count-badge').textContent = filtered.length;
+  });
+
+  // ── UTILS ──────────────────────────────────────
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    return String(m).padStart(2,'0') + ':' + String(s % 60).padStart(2,'0');
+  }
+
+  function escHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  let toastTimer;
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'success' ? '✓ ' : '✗ ') + msg;
+    t.className = 'show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+  }
+</script>
 </body>
-
 </html>
