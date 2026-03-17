@@ -50,6 +50,7 @@
       console.warn('Firebase no conectado, usando localStorage:', e);
       window.firebaseReady = false;
       document.getElementById('firebase-status').textContent = '🔴 Offline';
+      window.dispatchEvent(new Event('firebaseFailed'));
     }
   </script>
 </head>

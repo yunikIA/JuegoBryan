@@ -69,8 +69,10 @@ function setupLeaderboardListener() {
     } else {
       // Firebase aún no cargó, esperar el evento
       window.addEventListener('firebaseReady', tryConnect, { once: true });
+      window.addEventListener('firebaseFailed', () => renderLeaderboard(), { once: true });
     }
   };
+  renderLeaderboard(); // Show loading initially
   tryConnect();
 }
 
@@ -167,17 +169,27 @@ function stopTimer() {
 
 
 function renderLeaderboard(firebaseEntries) {
-  const history = firebaseEntries || getHistory();
+  let history;
+
+  if (firebaseEntries) {
+    history = firebaseEntries;
+    saveHistory(history); // Sincroniza el caché local con Firebase
+  } else if (window.firebaseReady === false) {
+    history = getHistory(); // Firebase falló, usar caché local
+  } else {
+    // Si no hay datos y firebase está cargando
+    leaderboardTable.style.display = 'none';
+    leaderboardEmpty.style.display = 'block';
+    leaderboardEmpty.textContent = 'Cargando ranking...';
+    return;
+  }
+
   leaderboardBody.innerHTML = '';
 
   if (history.length === 0) {
     leaderboardTable.style.display = 'none';
     leaderboardEmpty.style.display = 'block';
-    if (!firebaseEntries && window.firebaseReady === undefined) {
-      leaderboardEmpty.textContent = 'Cargando ranking...';
-    } else {
-      leaderboardEmpty.textContent = 'Sin registros aun. Gana una partida para aparecer aqui.';
-    }
+    leaderboardEmpty.textContent = 'Sin registros aun. Gana una partida para aparecer aqui.';
     return;
   }
 
