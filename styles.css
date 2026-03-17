@@ -421,13 +421,18 @@ header h1 {
 
 #player-name {
   background: #0f3460;
-  border: 1px solid #1a1a5e;
+  border: 1px solid #ff6b6b;
   color: #eee;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.9rem;
   flex: 1;
   max-width: 200px;
+  transition: border-color 0.3s;
+}
+
+#player-name.filled {
+  border-color: #51cf66;
 }
 
 #player-name:focus {

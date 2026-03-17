@@ -233,8 +233,13 @@ function init() {
   animating = false;
   gameOver = false;
   movesEl.textContent = '0';
-  statusMsg.textContent = 'Elige qué llevar en el bote';
-  statusMsg.className = '';
+  if (!playerNameInput.value.trim()) {
+    statusMsg.textContent = '✏️ Ingresá tu nombre para jugar';
+    statusMsg.className = 'error';
+  } else {
+    statusMsg.textContent = 'Elige qué llevar en el bote';
+    statusMsg.className = '';
+  }
   overlay.classList.add('hidden');
   boatPassengers.textContent = '';
   stopTimer();
@@ -275,6 +280,18 @@ function render() {
 
 function move(passenger) {
   if (animating || gameOver) return;
+
+  // Validar nombre antes del primer movimiento
+  if (!startTime && !playerNameInput.value.trim()) {
+    playerNameInput.focus();
+    playerNameInput.style.borderColor = '#ff6b6b';
+    statusMsg.textContent = '¡Ingresá tu nombre para jugar!';
+    statusMsg.className = 'error';
+    document.getElementById('scene').classList.add('shake');
+    setTimeout(() => document.getElementById('scene').classList.remove('shake'), 500);
+    setTimeout(() => { playerNameInput.style.borderColor = ''; }, 2000);
+    return;
+  }
 
   if (passenger !== 'none' && state[passenger] !== state.farmer) {
     statusMsg.textContent = 'El ' + ENTITIES[passenger].name + ' no está en tu orilla';
@@ -378,6 +395,22 @@ function showOverlay(type, msg) {
     overlayMessage.textContent = msg || 'Algo salió mal...';
   }
 }
+
+// Feedback visual en tiempo real del nombre
+playerNameInput.addEventListener('input', () => {
+  if (playerNameInput.value.trim()) {
+    playerNameInput.classList.add('filled');
+    playerNameInput.style.borderColor = '';
+    if (!gameOver && !startTime) {
+      statusMsg.textContent = 'Elige qué llevar en el bote';
+      statusMsg.className = '';
+    }
+  } else {
+    playerNameInput.classList.remove('filled');
+    statusMsg.textContent = '✏️ Ingresá tu nombre para jugar';
+    statusMsg.className = 'error';
+  }
+});
 
 buttons.forEach(btn => {
   btn.addEventListener('click', () => {
