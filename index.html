@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cruce del Río - Zorro, Gallina y Maíz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="game-container">
+
+    <header>
+      <h1>Cruce del Río</h1>
+      <p class="subtitle">Lleva al zorro, la gallina y el maíz al otro lado sin que se coman entre sí</p>
+    </header>
+
+    <div id="player-bar">
+      <label for="player-name">Jugador:</label>
+      <input type="text" id="player-name" placeholder="Tu nombre" maxlength="20">
+      <span id="timer">00:00</span>
+    </div>
+
+    <div id="status-bar">
+      <div id="status-message">Elige qué llevar en el bote</div>
+      <div id="move-counter">Movimientos: <span id="moves">0</span></div>
+    </div>
+
+    <div id="scene">
+      <div class="bank" id="bank-left">
+        <div class="bank-label">Inicio</div>
+        <div class="characters" id="left-characters"></div>
+      </div>
+
+      <div id="river">
+        <div id="river-waves">
+          <div class="wave-row"><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span></div>
+          <div class="wave-row offset"><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span></div>
+          <div class="wave-row"><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span><span class="wave">~</span></div>
+        </div>
+        <div id="boat-track">
+          <div id="boat">
+            <div id="boat-passengers"></div>
+            <div class="boat-hull">⛵</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bank" id="bank-right">
+        <div class="bank-label">Meta</div>
+        <div class="characters" id="right-characters"></div>
+      </div>
+    </div>
+
+    <div id="controls">
+      <p class="controls-label">¿Qué lleva el granjero?</p>
+      <div id="buttons">
+        <button class="move-btn" data-passenger="none">
+          <span class="btn-icon">🧑‍🌾</span>
+          <span class="btn-text">Solo</span>
+        </button>
+        <button class="move-btn" data-passenger="fox">
+          <span class="btn-icon">🦊</span>
+          <span class="btn-text">+ Zorro</span>
+        </button>
+        <button class="move-btn" data-passenger="chicken">
+          <span class="btn-icon">🐔</span>
+          <span class="btn-text">+ Gallina</span>
+        </button>
+        <button class="move-btn" data-passenger="corn">
+          <span class="btn-icon">🌽</span>
+          <span class="btn-text">+ Maíz</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="restart-area">
+      <button id="restart-btn">↺ Reiniciar Juego</button>
+    </div>
+
+    <div id="overlay" class="hidden">
+      <div id="overlay-box">
+        <div id="overlay-icon"></div>
+        <h2 id="overlay-title"></h2>
+        <p id="overlay-message"></p>
+        <button id="overlay-restart">Jugar de nuevo</button>
+      </div>
+    </div>
+
+  </div>
+
+  <section id="leaderboard">
+    <h3>Ranking</h3>
+    <div id="leaderboard-controls">
+      <button id="clear-history" title="Borrar historial">Borrar historial</button>
+    </div>
+    <table id="leaderboard-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Jugador</th>
+          <th>Movimientos</th>
+          <th>Tiempo</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard-body"></tbody>
+    </table>
+    <p id="leaderboard-empty">Sin registros aun. Gana una partida para aparecer aqui.</p>
+  </section>
+
+  <aside id="rules">
+    <h3>Reglas</h3>
+    <ul>
+      <li>🦊 El zorro se come a la gallina si quedan solos.</li>
+      <li>🐔 La gallina se come el maíz si quedan solos.</li>
+      <li>🧑‍🌾 Solo puedes llevar un elemento por viaje.</li>
+      <li>🎯 Lleva a todos a la orilla de meta para ganar.</li>
+    </ul>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
